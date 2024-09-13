@@ -20,5 +20,16 @@ const getArticleById = async (id) => {
     return result.rows[0];
 }
 
-module.exports = {createArticle, getAllArticles, getArticleById };
+const getRelatedArticles = async (category_id, id) => {
+    try {
+        const result = await pool.query(
+            `select * from articles where category_id = $1 and id != $2`,
+            [category_id, id]);
+        return result.rows;
+    } catch (error){
+        throw error;
+    }
+};
+
+module.exports = {createArticle, getAllArticles, getArticleById, getRelatedArticles };
 

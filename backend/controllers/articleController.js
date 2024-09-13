@@ -1,4 +1,4 @@
-const { createArticle, getAllArticles, getArticleById } = require("../models/articleModel")
+const { createArticle, getAllArticles, getArticleById, getRelatedArticles } = require("../models/articleModel")
 
 const postArticle = async (req, res) => {
     try {
@@ -14,7 +14,7 @@ const fetchArticles = async (req, res ) => {
         const articles = await getAllArticles();
         res.status(200).json(articles)
     } catch (error) {
-        res.status(500).json({ message: 'Error posting article', error: error.stack || error.message || error })
+        res.status(500).json({ message: 'Error posting article', error: error.stack || error.message || error });
     }
 }
 
@@ -24,8 +24,18 @@ const fetchArticleById = async (req, res) => {
         if(!article) return res.status(404).json({ message: 'Article not found' });
         res.status(200).json(article);
     } catch (error){
-        res.status(500).json({ message: 'Error fetching article', error: error.stack || error.message || error })
+        res.status(500).json({ message: 'Error fetching article', error: error.stack || error.message || error });
     }
 }
 
-module.exports = { postArticle, fetchArticles, fetchArticleById };
+const fetchRelatedArticles = async (req, res) => {
+    const { category_id, id } = req.query;
+    try {
+        const relatedArticles = await getRelatedArticles(category_id, id);
+        res.json(relatedArticles);
+    } catch (error) {
+        res.status(500).json({ message: 'Error posting article', error: error.stack || error.message || error });
+    } 
+}
+
+module.exports = { postArticle, fetchArticles, fetchArticleById, fetchRelatedArticles };
