@@ -15,5 +15,10 @@ const getAllArticles = async () => {
     return result.rows;
 }
 
-module.exports = {createArticle, getAllArticles };
+const getArticleById = async (id) => {
+    const result = await pool.query(`select * from articles where id = $1`, [id]);
+    return result.rows[0];
+}
+
+module.exports = {createArticle, getAllArticles, getArticleById };
 
