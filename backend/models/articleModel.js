@@ -31,5 +31,10 @@ const getRelatedArticles = async (category_id, id) => {
     }
 };
 
-module.exports = {createArticle, getAllArticles, getArticleById, getRelatedArticles };
+const getAllAuthors =async () => {
+    const result = await pool.query(`select * from authors`);
+    return result.rows;
+}
+
+module.exports = {createArticle, getAllArticles, getArticleById, getRelatedArticles, getAllAuthors };
 
