@@ -1,4 +1,4 @@
-const { createArticle, getAllArticles, getArticleById, getRelatedArticles, getAllAuthors } = require("../models/articleModel")
+const { createArticle, getAllArticles, getArticleById, getRelatedArticles, getAllAuthors, getAllCategories } = require("../models/articleModel")
 
 const postArticle = async (req, res) => {
     try {
@@ -47,4 +47,13 @@ const fetchAuthors = async (req, res) => {
     }
 }
 
-module.exports = { postArticle, fetchArticles, fetchArticleById, fetchRelatedArticles, fetchAuthors };
+const fetchCategories = async (req, res) => {
+    try {
+        const categories = await getAllCategories();
+        res.status(200).json(categories);
+    } catch (error) {
+        res.status(500).json({ message : 'Error fetching Categories', error: error.stack || error.message || error })
+    }
+}
+
+module.exports = { postArticle, fetchArticles, fetchArticleById, fetchRelatedArticles, fetchAuthors, fetchCategories };
