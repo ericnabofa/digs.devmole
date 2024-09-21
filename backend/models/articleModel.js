@@ -25,7 +25,10 @@ const getArticleById = async (id) => {
 const getRelatedArticles = async (category_id, id) => {
     try {
         const result = await pool.query(
-            `select * from articles where category_id = $1 and id != $2`,
+            `select articles.id, articles.name, articles.description, articles.content, articles.read_time, articles.category_id, articles.created_at, authors.name as author_name
+        from articles
+        join authors on articles.author_id = authors.id 
+            where articles.category_id = $1 and articles.id != $2`,
             [category_id, id]);
         return result.rows;
     } catch (error){
