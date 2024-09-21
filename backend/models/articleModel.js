@@ -11,7 +11,9 @@ const createArticle = async (data) => {
 };
 
 const getAllArticles = async () => {
-    const result = await pool.query(`select * from articles`);
+    const result = await pool.query(`select articles.id, articles.name, articles.description, articles.content, articles.read_time, articles.category_id, articles.created_at, authors.name as author_name
+        from articles
+        join authors on articles.author_id = authors.id`);
     return result.rows;
 }
 
