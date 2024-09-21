@@ -30,7 +30,7 @@ export default function Home() {
             {/* Header */}
             <header className="bg-primary text-primary-foreground py-4 px-6 shadow">
                 <div className="container mx-auto flex items-center justify-between">
-                   <Link href="/" className="text-xl font-bold">Articles</Link>
+                   <Link href="/" className="text-xl font-bold">DevMole Articles</Link>
                    <nav className="flex items-center space-x-6">
                     <Link href="#">HTML/CSS</Link>
                     <Link href="#">PHP/LARAVEL</Link>
