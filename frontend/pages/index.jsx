@@ -51,7 +51,7 @@ export default function Home() {
                                 <Card key={article.id}>
                                     <CardContent>
                                         <h3 className="text-xl font-bold mb-2">{article.name}</h3>
-                                        <p className="text-muted-foreground mb-4">{article.content.slice(0,100)}...</p>
+                                        <p className="text-muted-foreground mb-4">{article.description.slice(0,100)}...</p>
                                         <div className="flex items-center text-muted-foreground text-sm mb-4">
                                             <UserIcon className="w-4 h-4 mr-2" />
                                             <span>{article.author_name}</span>
