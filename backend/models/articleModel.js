@@ -17,23 +17,23 @@ const getAllArticles = async () => {
     return result.rows;
 }
 
-const getArticleById = async (id) => {
+const getArticleById = async (article_id) => {
     const result = await pool.query(`
         select articles.id, articles.name, articles.description, articles.content, articles.read_time, articles.category_id, articles.created_at, authors.name as author_name
         from articles
         join authors on articles.author_id = authors.id
-        where articles.id = $1`, [id]);
+        where articles.id = $1`, [article_id]);
     return result.rows[0];
 }
 
-const getRelatedArticles = async (category_id, id) => {
+const getRelatedArticles = async (category_id, article_id) => {
     try {
         const result = await pool.query(
             `select articles.id, articles.name, articles.description, articles.content, articles.read_time, articles.category_id, articles.created_at, authors.name as author_name
         from articles
         join authors on articles.author_id = authors.id 
             where articles.category_id = $1 and articles.id != $2`,
-            [category_id, id]);
+            [category_id, article_id]);
         return result.rows;
     } catch (error){
         throw error;

@@ -29,9 +29,9 @@ const fetchArticleById = async (req, res) => {
 }
 
 const fetchRelatedArticles = async (req, res) => {
-    const { category_id, id } = req.query;
+    const { category_id, article_id } = req.query;
     try {
-        const relatedArticles = await getRelatedArticles(category_id, id);
+        const relatedArticles = await getRelatedArticles(category_id, article_id);
         res.json(relatedArticles);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching related articles', error: error.stack || error.message || error });

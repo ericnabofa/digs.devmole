@@ -23,7 +23,7 @@ export default function ArticleDetail() {
                     setArticle(response.data);
 
                     return axios.get(`http://localhost:5000/api/articles/related`, {
-                        params: { category_id: response.data.category_id, id: id },
+                        params: { category_id: response.data.category_id, article_id: id },
                     });
                 })
                 .then(response => {
@@ -40,7 +40,11 @@ export default function ArticleDetail() {
     }
 
     return (
+
         <section className="bg-muted py-12 md:py-16 lg:py-20">
+        <div className="container mx-auto flex items-center justify-between">
+           <Link href="/" className="bg-primary text-primary-foreground py-4 px-6 shadow text-xl font-bold">DevMole Articles</Link>
+        </div>
         <div className="container mx-auto px-4 py-12">
             {/* Display the main article */}
             <Card>

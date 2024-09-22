@@ -12,6 +12,31 @@ import { ArrowRightIcon } from '@/components/icons/ArrowRightIcon';
 export default function Home() {
     const [articles, setArticles] = useState([]);
 
+    const announcements = [
+        {
+            id: 1,
+            title:'New Article Coming soon',
+            description: 'Stay tuned for our upcoming article on AI development.',
+            date: '2024-09-22',
+            image: '/images/announcement1.png'
+        },
+
+        {
+            id: 2,
+            title:'PHP LARAVEL Updates',
+            description: 'Stunning Property management site for house owners and property agents curated on php laravel.',
+            date: '2024-09-26',
+            image: '/images/announcement2.png'
+        },
+        {
+            id: 3,
+            title:'C# DOTNET Highlights',
+            description: 'Exciting online jobs board built on c# dotnet.',
+            date: '2024-10-15',
+            image: '/images/announcement3.png'
+        }
+    ]
+
     useEffect(() => {
         const fetchArticles = async () => {
             try {
@@ -70,6 +95,30 @@ export default function Home() {
                         </div>
                     </div>
                 </section>
+                
+                {/* Announcements */}
+                <section className="bg-secondary py-8">
+                    <div className="container mx-auto px-4 md:px-6">
+                        <h2 className="text-2xl font-bold mb-6 text-white">Announcements</h2>
+                        <div className="grid gird-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {announcements.map(announcement => (
+                                <Card key={announcement.id}>
+                                    <img
+                                    src={announcement.image}
+                                    alt={announcement.title}
+                                    className="w-full h-48 object-cover rounded-t-md"
+                                    />
+                                    <CardContent>
+                                        <h3 className="text-lg font-semibold">{announcement.title}</h3>
+                                        <p className="text-gray-700 mb-2">{announcement.description}</p>
+                                        <span className="text-sm text-gray-500"> Date: {announcement.date}</span>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
             </main>
 
             {/* Footer */}
