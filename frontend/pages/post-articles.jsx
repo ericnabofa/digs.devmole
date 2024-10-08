@@ -1,17 +1,33 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic'; // Import Next.js dynamic
+import axios from 'axios';
 import { Card } from '@/components/ui/Card';
-import { CardContent} from '@/components/ui/CardContent';
+import { CardContent } from '@/components/ui/CardContent';
 import { Input } from '@/components/ui/Input';
-import { Textarea } from '@/components/ui/Textarea';
 import { Label } from '@/components/ui/Label';
-import { Select } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
+import parse from 'html-react-parser';
+
+// Dynamically import ReactQuill to only load it on the client-side
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+import 'react-quill/dist/quill.snow.css'; // Import Quill styles only on the client side
+
+// Define a toolbar
+const modules = {
+  toolbar: [
+    [{ header: '1' }, { header: '2' }, { font: [] }],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    ['bold', 'italic', 'underline'],
+  ],
+};
+
+// Regular expression to detect image URLs
+const imageUrlRegex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif))/gi;
 
 export default function PostArticle() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState(''); // Store content as HTML
   const [readTime, setReadTime] = useState(0);
   const [authorId, setAuthorId] = useState('');
   const [categoryId, setCategoryId] = useState('');
@@ -22,8 +38,12 @@ export default function PostArticle() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const authorsResponse = await axios.get('http://localhost:5000/api/authors');
-        const categoriesResponse = await axios.get('http://localhost:5000/api/categories');
+        const authorsResponse = await axios.get(
+          'http://localhost:5000/api/authors'
+        );
+        const categoriesResponse = await axios.get(
+          'http://localhost:5000/api/categories'
+        );
         setAuthors(authorsResponse.data);
         setCategories(categoriesResponse.data);
       } catch (error) {
@@ -33,13 +53,55 @@ export default function PostArticle() {
     fetchData();
   }, []);
 
+  // Updated function to process HTML content and replace image URLs
+  const processContentForImages = (content) => {
+    const options = {
+      replace: (domNode) => {
+        if (domNode.type === 'text') {
+          const text = domNode.data;
+          const parts = [];
+
+          let lastIndex = 0;
+          let match;
+
+          // Use the regex to find all image URLs in the text node
+          while ((match = imageUrlRegex.exec(text)) !== null) {
+            const { index } = match;
+            if (index > lastIndex) {
+              parts.push(text.slice(lastIndex, index));
+            }
+            parts.push(
+              <img
+                src={match[0]}
+                alt="Image"
+                className="max-w-full h-auto my-4"
+                key={index}
+              />
+            );
+            lastIndex = index + match[0].length;
+          }
+
+          if (lastIndex < text.length) {
+            parts.push(text.slice(lastIndex));
+          }
+
+          if (parts.length > 0) {
+            return <>{parts}</>;
+          }
+        }
+      },
+    };
+
+    return parse(content, options);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:5000/api/articles', {
         name,
         description,
-        content,
+        content, // Send raw content including any image URLs
         readTime,
         authorId,
         categoryId,
@@ -74,7 +136,7 @@ export default function PostArticle() {
                   </div>
                   <div>
                     <Label htmlFor="description">Description</Label>
-                    <Textarea
+                    <Input
                       id="description"
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
@@ -84,12 +146,12 @@ export default function PostArticle() {
                   </div>
                   <div>
                     <Label htmlFor="content">Content</Label>
-                    <Textarea
-                      id="content"
+                    {/* Quill Rich Text Editor */}
+                    <ReactQuill
                       value={content}
-                      onChange={(e) => setContent(e.target.value)}
+                      onChange={setContent}
                       placeholder="Enter article content"
-                      required
+                      modules={modules}
                     />
                   </div>
                   <div>
@@ -100,7 +162,9 @@ export default function PostArticle() {
                       onChange={(e) => setAuthorId(e.target.value)}
                       required
                     >
-                      <option value="" disabled>Select an author</option>
+                      <option value="" disabled>
+                        Select an author
+                      </option>
                       {authors.map((author) => (
                         <option key={author.id} value={author.id}>
                           {author.name}
@@ -116,7 +180,9 @@ export default function PostArticle() {
                       onChange={(e) => setCategoryId(e.target.value)}
                       required
                     >
-                      <option value="" disabled>Select a category</option>
+                      <option value="" disabled>
+                        Select a category
+                      </option>
                       {categories.map((category) => (
                         <option key={category.id} value={category.id}>
                           {category.name}
@@ -150,17 +216,25 @@ export default function PostArticle() {
           <h2 className="text-xl font-semibold mb-4">Article Preview</h2>
           <div>
             <h3 className="text-lg font-bold">{name || 'Article Title'}</h3>
-            <p className="text-sm text-gray-600">{description || 'Article description goes here...'}</p>
+            <p className="text-sm text-gray-600">
+              {description || 'Article description goes here...'}
+            </p>
             <div className="mt-4">
-              <p>{content || 'Article content will be displayed here...'}</p>
+              {/* Render the processed content */}
+              {processContentForImages(content) || (
+                <p>Article content will be displayed here...</p>
+              )}
               <p className="text-sm mt-2 text-gray-500">
                 Read Time: {readTime ? `${readTime} min` : 'N/A'}
               </p>
               <p className="text-sm text-gray-500">
-                Author: {authors.find(a => a.id === parseInt(authorId))?.name || 'N/A'}
+                Author:{' '}
+                {authors.find((a) => a.id === parseInt(authorId))?.name || 'N/A'}
               </p>
               <p className="text-sm text-gray-500">
-                Category: {categories.find(c => c.id === parseInt(categoryId))?.name || 'N/A'}
+                Category:{' '}
+                {categories.find((c) => c.id === parseInt(categoryId))?.name ||
+                  'N/A'}
               </p>
             </div>
           </div>
@@ -169,5 +243,3 @@ export default function PostArticle() {
     </div>
   );
 }
-
-

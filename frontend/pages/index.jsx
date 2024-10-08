@@ -7,6 +7,8 @@ import { Separator } from "@/components/ui/Separator";
 import { UserIcon } from '@/components/icons/UserIcon';
 import { ClockIcon } from '@/components/icons/ClockIcon';
 import { ArrowRightIcon } from '@/components/icons/ArrowRightIcon';
+import Header from '@/components/Header'; // Import Header
+import Footer from '@/components/Footer'; // Import Footer
 
 
 export default function Home() {
@@ -53,18 +55,7 @@ export default function Home() {
     return (
         <div className="flex flex-col min-h-[100dvh]">
             {/* Header */}
-            <header className="bg-primary text-primary-foreground py-4 px-6 shadow">
-                <div className="container mx-auto flex items-center justify-between">
-                   <Link href="/" className="text-xl font-bold">DevMole Articles</Link>
-                   <nav className="flex items-center space-x-6">
-                    <Link href="#">HTML/CSS</Link>
-                    <Link href="#">PHP/LARAVEL</Link>
-                    <Link href="#">C# DOTNET</Link>
-                    <Link href="#">JAVASCRIPT/REACT/NEXT</Link>
-                    <Link href="#">OTHERS</Link>
-                    </nav> 
-                </div>
-            </header>
+            <Header />
 
             {/* Main Section */}
             <main className="flex-1">
@@ -122,16 +113,7 @@ export default function Home() {
             </main>
 
             {/* Footer */}
-            <footer className="bg-muted text-muted-foreground py-6">
-                <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
-                    <p className="text-sm">&copy; 2023 Articles. All rights reserved.</p>
-                    <nav className="flex items-center space-x-4">
-                        <Link href="#">Privacy Policy</Link>
-                        <Link href="#">Terms of Service</Link>
-                        <Link href="#">Contact Us</Link>
-                    </nav>
-                </div>
-            </footer>
+            <Footer />
         </div>
     )
 }
