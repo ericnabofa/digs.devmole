@@ -70,6 +70,7 @@ export default function ArticleDetail() {
                 .then((response) => {
                     setArticle(response.data);
 
+                    // Fetch related articles
                     return axios.get(`http://localhost:5000/api/articles/related`, {
                         params: { category_id: response.data.category_id, article_id: id },
                     });
@@ -99,6 +100,12 @@ export default function ArticleDetail() {
             <main className="flex-1">
                 <section className="bg-muted py-12 md:py-16 lg:py-20">
                     <div className="container mx-auto px-4 py-12">
+                        {/* Back to Category Link */}
+                        <div className="mb-4">
+                            <Link href={`/categories/${article.category_id}`} className="text-primary hover:underline">
+                                &larr; Back to {article.category_name || 'Category'}
+                            </Link>
+                        </div>
                         {/* Display the main article */}
                         <Card>
                             {article.image_url && (
@@ -132,6 +139,13 @@ export default function ArticleDetail() {
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                                         {relatedArticles.map((related) => (
                                             <Card key={related.id}>
+                                                {related.image_url && (
+                                                    <img
+                                                        src={related.image_url}
+                                                        alt={related.name}
+                                                        className="w-full h-48 object-cover rounded-t-md"
+                                                    />
+                                                )}
                                                 <CardContent>
                                                     <h3 className="text-lg font-bold mb-2">{related.name}</h3>
                                                     <p className="text-muted-foreground mb-4">
