@@ -1,4 +1,4 @@
-const { createArticle, getAllArticles, getArticleById, getRelatedArticles, getAllAuthors, getAllCategories } = require("../models/articleModel")
+const { createArticle, getAllArticles, getArticleById, getRelatedArticles, getAllAuthors, getAllCategories, getArticlesByCategoryId, getPopularArticles } = require("../models/articleModel")
 
 const postArticle = async (req, res) => {
     try {
@@ -28,6 +28,23 @@ const fetchArticleById = async (req, res) => {
     }
 }
 
+const fetchPopularArticles= async (req, res) => {
+    try {
+      const idsParam = req.query.ids;
+      if (!idsParam) {
+        return res.status(400).json({ message: 'No IDs provided' });
+      }
+      const ids = idsParam.split(',').map((id) => parseInt(id));
+      const articles = await getPopularArticles(ids);
+      res.status(200).json(articles);
+    } catch (error) {
+      res.status(500).json({
+        message: 'Error fetching articles by IDs',
+        error: error.stack || error.message || error,
+      });
+    }
+  };
+
 const fetchRelatedArticles = async (req, res) => {
     const { category_id, article_id } = req.query;
     try {
@@ -56,4 +73,17 @@ const fetchCategories = async (req, res) => {
     }
 }
 
-module.exports = { postArticle, fetchArticles, fetchArticleById, fetchRelatedArticles, fetchAuthors, fetchCategories };
+const fetchArticlesByCategoryId = async (req, res) => {
+    try {
+      const categoryId = req.params.categoryId;
+      const articles = await getArticlesByCategoryId(categoryId);
+      res.status(200).json(articles);
+    } catch (error) {
+      res.status(500).json({
+        message: 'Error fetching articles by category',
+        error: error.stack || error.message || error,
+      });
+    }
+  };
+
+module.exports = { postArticle, fetchArticles, fetchArticleById, fetchRelatedArticles, fetchAuthors, fetchCategories, fetchArticlesByCategoryId, fetchPopularArticles };
