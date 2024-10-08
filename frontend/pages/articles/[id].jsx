@@ -13,7 +13,7 @@ import Header from '@/components/Header'; // Import Header
 import Footer from '@/components/Footer'; // Import Footer
 
 // Regular expression to detect image URLs
-const imageUrlRegex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif))/gi;
+const imageUrlRegex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))/gi;
 
 // Function to process content and replace image URLs with <img> tags
 const processContentForImages = (content) => {

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^1.0.6",
     "axios": "^1.7.7",
     "html-react-parser": "^5.1.18",
     "next": "14.2.11",
