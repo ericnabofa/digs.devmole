@@ -17,7 +17,7 @@ export default function Home() {
     const announcements = [
         {
             id: 1,
-            title:'New Article Coming soon',
+            title: 'New Article Coming soon',
             description: 'Stay tuned for our upcoming article on AI development.',
             date: '2024-09-22',
             image: '/images/announcement1.png'
@@ -25,14 +25,14 @@ export default function Home() {
 
         {
             id: 2,
-            title:'PHP LARAVEL Updates',
+            title: 'PHP LARAVEL Updates',
             description: 'Stunning Property management site for house owners and property agents curated on php laravel.',
             date: '2024-09-26',
             image: '/images/announcement2.png'
         },
         {
             id: 3,
-            title:'C# DOTNET Highlights',
+            title: 'C# DOTNET Highlights',
             description: 'Exciting online jobs board built on c# dotnet.',
             date: '2024-10-15',
             image: '/images/announcement3.png'
@@ -65,9 +65,16 @@ export default function Home() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 ">
                             {articles.map(article => (
                                 <Card key={article.id}>
+                                    {article.image_url && (
+                                        <img
+                                            src={article.image_url}
+                                            alt={article.name}
+                                            className="w-full h-48 object-cover rounded-t-md"
+                                        />
+                                    )}
                                     <CardContent>
                                         <h3 className="text-xl font-bold mb-2">{article.name}</h3>
-                                        <p className="text-muted-foreground mb-4">{article.description.slice(0,100)}...</p>
+                                        <p className="text-muted-foreground mb-4">{article.description.slice(0, 100)}...</p>
                                         <div className="flex items-center text-muted-foreground text-sm mb-4">
                                             <UserIcon className="w-4 h-4 mr-2" />
                                             <span>{article.author_name}</span>
@@ -78,7 +85,7 @@ export default function Home() {
                                         </div>
                                         <Link href={`/articles/${article.id}`} className="inline-flex items-center text-primary hover
                                         :underline"> Read More
-                                                <ArrowRightIcon className="ml-2 h-4 w-4" />
+                                            <ArrowRightIcon className="ml-2 h-4 w-4" />
                                         </Link>
                                     </CardContent>
                                 </Card>
@@ -86,7 +93,7 @@ export default function Home() {
                         </div>
                     </div>
                 </section>
-                
+
                 {/* Announcements */}
                 <section className="bg-secondary py-8">
                     <div className="container mx-auto px-4 md:px-6">
@@ -95,9 +102,9 @@ export default function Home() {
                             {announcements.map(announcement => (
                                 <Card key={announcement.id}>
                                     <img
-                                    src={announcement.image}
-                                    alt={announcement.title}
-                                    className="w-full h-48 object-cover rounded-t-md"
+                                        src={announcement.image}
+                                        alt={announcement.title}
+                                        className="w-full h-48 object-cover rounded-t-md"
                                     />
                                     <CardContent>
                                         <h3 className="text-lg font-semibold">{announcement.title}</h3>

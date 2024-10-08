@@ -7,8 +7,8 @@ import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { Button } from '@/components/ui/Button';
 import parse from 'html-react-parser';
-import Header from '@/components/Header'; // Import Header
-import Footer from '@/components/Footer'; // Import Footer
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 // Dynamically import ReactQuill
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
@@ -24,11 +24,12 @@ const modules = {
 };
 
 // Regular expression to detect image URLs
-const imageUrlRegex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp))/gi;
+const imageUrlRegex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif))/gi;
 
 export default function PostArticle() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [imageUrl, setImageUrl] = useState(''); // New state for image URL
   const [content, setContent] = useState('');
   const [readTime, setReadTime] = useState('');
   const [authorId, setAuthorId] = useState('');
@@ -102,6 +103,7 @@ export default function PostArticle() {
       const response = await axios.post('http://localhost:5000/api/articles', {
         name,
         description,
+        imageUrl, // Include imageUrl in the request body
         content,
         readTime,
         authorId,
@@ -112,6 +114,7 @@ export default function PostArticle() {
         // Reset form fields
         setName('');
         setDescription('');
+        setImageUrl('');
         setContent('');
         setReadTime('');
         setAuthorId('');
@@ -155,6 +158,16 @@ export default function PostArticle() {
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Enter article description"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="imageUrl">Image URL</Label>
+                      <Input
+                        id="imageUrl"
+                        value={imageUrl}
+                        onChange={(e) => setImageUrl(e.target.value)}
+                        placeholder="Enter image URL"
                         required
                       />
                     </div>
@@ -233,6 +246,13 @@ export default function PostArticle() {
               <CardContent>
                 <h2 className="text-xl font-semibold mb-4">Article Preview</h2>
                 <div>
+                  {imageUrl && (
+                    <img
+                      src={imageUrl}
+                      alt="Article Image"
+                      className="max-w-full h-auto mb-4"
+                    />
+                  )}
                   <h3 className="text-2xl font-bold">
                     {name || 'Article Title'}
                   </h3>

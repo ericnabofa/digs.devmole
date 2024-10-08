@@ -101,6 +101,13 @@ export default function ArticleDetail() {
                     <div className="container mx-auto px-4 py-12">
                         {/* Display the main article */}
                         <Card>
+                            {article.image_url && (
+                                <img
+                                    src={article.image_url}
+                                    alt={article.name}
+                                    className="w-full h-64 object-cover rounded-t-md"
+                                />
+                            )}
                             <CardContent>
                                 <h1 className="text-3xl font-bold mb-4">{article.name}</h1>
                                 <div className="flex items-center text-muted-foreground text-sm mb-4">
