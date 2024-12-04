@@ -1,4 +1,5 @@
 // pages/register.jsx
+
 import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -7,24 +8,30 @@ export default function Register() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post('http://localhost:5000/api/auth/register', {
         username,
         email,
         password,
       });
-      // Save token and user data (consider using context or state management)
+
+      // Save token and user data to localStorage
       localStorage.setItem('token', response.data.token);
-      setUser(response.data.user);
-      // Redirect to home or profile page
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+
+      // Redirect to home page
       router.push('/');
     } catch (error) {
-      console.error('Error registering:', error);
-      alert('Registration failed');
+      console.error('Error registering:', error.response?.data || error.message);
+      alert(error.response?.data?.message || 'Registration failed');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -65,8 +72,12 @@ export default function Register() {
             required
           />
         </div>
-        <button className="px-4 py-2 bg-primary text-white rounded" type="submit">
-          Register
+        <button
+          className={`px-4 py-2 text-white rounded ${loading ? 'bg-gray-500' : 'bg-primary'}`}
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? 'Registering...' : 'Register'}
         </button>
       </form>
     </div>

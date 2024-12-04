@@ -14,6 +14,21 @@ import { Card } from '@/components/ui/Card';
 import { CardContent } from '@/components/ui/CardContent';
 import { Separator } from '@/components/ui/Separator';
 
+const getAuthToken = () => {
+  if (!user) {
+    alert('You must be logged in to perform this action.');
+    return null;
+  }
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Token is missing or expired. Please log in again.');
+    return null;
+  }
+  return token;
+};
+
+
+
 // Regular expression to detect image URLs
 const imageUrlRegex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif))/gi;
 
@@ -126,8 +141,24 @@ export default function ArticleDetail() {
       alert('Please log in to post a comment.');
       return;
     }
+  
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Authentication token not found. Please log in again.');
+      return;
+    }
+  
+    if (!newComment.trim()) {
+      alert('Comment cannot be empty.');
+      return;
+    }
+  
     try {
-      const token = localStorage.getItem('token');
+      console.log('Posting comment with payload:', {
+        articleId: id,
+        content: newComment,
+      });
+  
       const response = await axios.post(
         'http://localhost:5000/api/comments',
         {
@@ -140,18 +171,25 @@ export default function ArticleDetail() {
           },
         }
       );
+  
+      console.log('Comment posted successfully:', response.data);
+  
       setComments([...comments, response.data]);
       setNewComment('');
     } catch (error) {
-      console.error('Error posting comment:', error);
+      console.error('Error posting comment:', error.response || error);
       alert('Failed to post comment.');
     }
   };
+  
+  
 
   // Handle editing a comment
   const handleEditComment = async (commentId) => {
+    const token = getAuthToken();
+    if (!token) return;
+  
     try {
-      const token = localStorage.getItem('token');
       const response = await axios.put(
         `http://localhost:5000/api/comments/${commentId}`,
         { content: editedCommentContent },
@@ -173,11 +211,14 @@ export default function ArticleDetail() {
       alert('Failed to edit comment.');
     }
   };
+  
 
   // Handle deleting a comment
   const handleDeleteComment = async (commentId) => {
+    const token = getAuthToken();
+    if (!token) return;
+  
     try {
-      const token = localStorage.getItem('token');
       await axios.delete(`http://localhost:5000/api/comments/${commentId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -189,15 +230,14 @@ export default function ArticleDetail() {
       alert('Failed to delete comment.');
     }
   };
+  
 
   // Handle liking/disliking the article
   const handleArticleLike = async (type) => {
-    if (!user) {
-      alert('Please log in to like or dislike.');
-      return;
-    }
+    const token = getAuthToken();
+    if (!token) return;
+  
     try {
-      const token = localStorage.getItem('token');
       const response = await axios.post(
         `http://localhost:5000/api/likes/article/${id}`,
         { type },
@@ -213,15 +253,14 @@ export default function ArticleDetail() {
       alert('Failed to like/dislike article.');
     }
   };
+  
 
   // Handle liking/disliking a comment
   const handleCommentLike = async (commentId, type) => {
-    if (!user) {
-      alert('Please log in to like or dislike comments.');
-      return;
-    }
+    const token = getAuthToken();
+    if (!token) return;
+  
     try {
-      const token = localStorage.getItem('token');
       const response = await axios.post(
         `http://localhost:5000/api/likes/comment/${commentId}`,
         { type },
@@ -248,6 +287,7 @@ export default function ArticleDetail() {
       alert('Failed to like/dislike comment.');
     }
   };
+  
 
   return (
     <div className="flex flex-col min-h-screen">

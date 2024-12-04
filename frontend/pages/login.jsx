@@ -1,28 +1,36 @@
 // pages/login.jsx
-import { useState } from 'react';
+
+import { useState, useContext } from 'react';
+import { AuthContext } from '@/contexts/AuthContext';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
 export default function Login() {
+  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
       const response = await axios.post('http://localhost:5000/api/auth/login', {
         email,
         password,
       });
-      // Save token and user data
-      localStorage.setItem('token', response.data.token);
-      setUser(response.data.user);
-      // Redirect to home or profile page
+      // Save the token in context
+      login(response.data.token);  
+      console.log(response.data)
+      // Redirect to home page
       router.push('/');
     } catch (error) {
-      console.error('Error logging in:', error);
-      alert('Login failed');
+      console.error('Error logging in:', error.response?.data || error.message);
+      alert(error.response?.data?.message || 'Login failed');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -52,8 +60,12 @@ export default function Login() {
             required
           />
         </div>
-        <button className="px-4 py-2 bg-primary text-white rounded" type="submit">
-          Login
+        <button
+          className={`px-4 py-2 text-white rounded ${loading ? 'bg-gray-500' : 'bg-primary'}`}
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
     </div>
