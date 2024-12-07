@@ -1,26 +1,12 @@
-// // routes/commentRoutes.js
-// const express = require('express');
-// const { authenticate } = require('../middleware/authMiddleware');
-// const {
-//   postComment,
-//   fetchComments,
-//   editComment,
-//   removeComment,
-// } = require('../controllers/commentController');
+const express = require('express');
+const authMiddleware = require('../middleware/authMiddleware'); // Correct import path
+const { createComment, replyToComment } = require('../controllers/commentController');
+const router = express.Router();
 
-// const router = express.Router();
+// Add a comment on an article
+router.post('/:articleId/comment', authMiddleware, createComment);
 
-// // Post a comment
-// router.post('/', authenticate, postComment);
+// Reply to a comment
+router.post('/:commentId/reply', authMiddleware, replyToComment);
 
-// // Get comments for an article
-// router.get('/:articleId', fetchComments);
-
-// // Edit a comment
-// router.put('/:commentId', authenticate, editComment);
-
-// // Delete a comment
-// router.delete('/:commentId', authenticate, removeComment);
-
-// module.exports = router;
-
+module.exports = router;
